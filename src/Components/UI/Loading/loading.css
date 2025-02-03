@@ -1,0 +1,72 @@
+/* Spinner */
+
+.lds-spinner,
+.lds-spinner div {
+  box-sizing: border-box;
+}
+
+.lds-spinner {
+  color: white;
+  display: inline-block;
+  position: relative;
+  width: 24px; /* Adjust the width */
+  height: 24px; /* Adjust the height */
+}
+
+.lds-spinner div {
+  transform-origin: 12px 12px; /* Adjust according to new size */
+  animation: lds-spinner 1.4s ease-in infinite;
+  opacity: 1; /* Start with full opacity */
+}
+
+.lds-spinner div:after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 1px; /* Adjust according to new size */
+  left: 11px; /* Adjust according to new size */
+  width: 2px; /* Adjust according to new size */
+  height: 6px; /* Adjust according to new size */
+  border-radius: 20%;
+  background: white;
+}
+
+.lds-spinner div:nth-child(1) {
+  transform: rotate(0deg);
+  animation-delay: -1.4s;
+}
+
+.lds-spinner div:nth-child(2) {
+  transform: rotate(30deg);
+  animation-delay: -1.3s;
+}
+
+.lds-spinner div:nth-child(3) {
+  transform: rotate(60deg);
+  animation-delay: -1.2s;
+}
+
+.lds-spinner div:nth-child(4) {
+  transform: rotate(90deg);
+  animation-delay: -1.1s;
+}
+
+.lds-spinner div:nth-child(5) {
+  transform: rotate(120deg);
+  animation-delay: -1s;
+}
+
+@keyframes lds-spinner {
+  0% {
+    transform: rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: rotate(180deg);
+    opacity: 0.5; /* Start fading out halfway */
+  }
+  100% {
+    transform: rotate(360deg);
+    opacity: 1;
+  }
+}
