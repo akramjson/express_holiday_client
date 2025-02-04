@@ -1,10 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useAuthenticatedCalls from "../../../api/authenticatedapi";
 import { authEndpoints } from "../../../libs/authEndPoints";
-import { userSchemaType } from "../../../types/User/schema";
+import { useAuthStore } from "../../../Store/Auth/authStore";
 
 const useCreateTicket = () => {
   const { postRequest } = useAuthenticatedCalls();
+  const { access_token } = useAuthStore();
   const queryClient = useQueryClient();
   const createTicket = async (data: any) => {
     const response = await postRequest({
@@ -23,12 +24,7 @@ const useCreateTicket = () => {
     onSettled: (data, error) => {
       if (error) {
       } else {
-        queryClient.setQueryData(
-          ["tickets"],
-          (oldData: userSchemaType[] | undefined) => {
-            return [...(oldData || []), data];
-          }
-        );
+        queryClient.invalidateQueries({ queryKey: ["tickets", access_token] });
       }
     },
   });

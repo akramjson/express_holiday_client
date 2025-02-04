@@ -128,7 +128,7 @@ const CreateTicketForm = ({
               onError: () => {
                 setInformer({
                   title: "Error!",
-                  description: "There was an issue creating your account.",
+                  description: "There was an issue creating your file.",
                   type: "error",
                   isActive: true,
                 });
@@ -137,10 +137,12 @@ const CreateTicketForm = ({
           );
         }
       },
-      onError: () => {
+      onError: (err) => {
+        console.log(err);
+
         setInformer({
           title: "Error!",
-          description: "There was an issue creating your account.",
+          description: "There was an issue creating your ticket.",
           type: "error",
           isActive: true,
         });
@@ -310,7 +312,6 @@ const ArrayFieldSet = ({
 
 const MultipleSelect = ({
   input,
-  register,
   errors,
   setSelectedValues,
 }: {
