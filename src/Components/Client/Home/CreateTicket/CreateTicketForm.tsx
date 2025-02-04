@@ -1,15 +1,17 @@
 import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import useCreateTicketFileFetch from "../../../../hooks/Files/Create/useCreateTicketFileFetch";
 import useCreateTicket from "../../../../hooks/Tickets/Create/useCreateTicket";
 import { inputSchematype } from "../../../../types/Inputs/schema";
-import { Button, Input, TextArea } from "../../../UI";
-import { UploadedFile } from "../DragFile";
+import { Button, Informer, Input, TextArea } from "../../../UI";
 
 type CreateTicketFormProps = {
   inputs: inputSchematype[];
   selectedSubCat: string | undefined;
   isLoading: boolean;
-  uploadedFiles: UploadedFile[];
+  uploadedFiles: File[];
+  resetAll: VoidFunction;
 };
 
 type ResponseItem = {
@@ -28,18 +30,30 @@ type FormValues = {
 
 const CreateTicketForm = ({
   inputs,
-  isLoading,
   selectedSubCat,
+  uploadedFiles,
+  resetAll,
 }: CreateTicketFormProps) => {
   const {
     register,
     control,
+    reset,
     handleSubmit,
     formState: { errors },
   } = useForm<FormValues>();
 
-  // Array to track selected values for "multiple" inputs
   const [selectedValues, setSelectedValues] = useState<any[]>([]);
+  const [informer, setInformer] = useState<{
+    title: string;
+    description: string;
+    type: "success" | "error";
+    isActive: boolean;
+  }>({
+    title: "",
+    description: "",
+    type: "success",
+    isActive: false,
+  });
 
   const formatDataForSubmission = (data: FormValues): TicketFormData => {
     const responses = inputs?.flatMap((input) => {
@@ -75,25 +89,63 @@ const CreateTicketForm = ({
   };
 
   const createTicketMutation = useCreateTicket();
-
+  // const createFileForTicket = useCreateTicketFile();
+  const createFileForTicket = useCreateTicketFileFetch();
+  const navigate = useNavigate();
   const onSubmitForm = (data: FormValues) => {
-    console.log(selectedValues, "selected");
-
     const formattedData = formatDataForSubmission(data);
-    console.log(formattedData?.responses);
-    console.log(formattedData, "s7i7a");
 
-    const newData = {
-      sub_category: selectedSubCat,
-      responses: formattedData?.responses.push(...selectedValues),
-    };
-
-    createTicketMutation.mutate(
-      formattedData
-      // ...formattedData,
-      // responses: formattedData.responses.push(...selectedValues),
-    );
-    console.log(newData, "fadfsadf");
+    createTicketMutation.mutate(formattedData, {
+      onSuccess: (response) => {
+        console.log("Files about to upload:", uploadedFiles);
+        console.log("Ticket ID:", response?.ticket_id);
+        setInformer({
+          title: "Success!",
+          description: "Your ticket was created successfully.",
+          type: "success",
+          isActive: true,
+        });
+        reset();
+        if (response?.ticket_id && uploadedFiles.length > 0) {
+          createFileForTicket.mutate(
+            {
+              ticket_id: response.ticket_id,
+              files: uploadedFiles,
+            },
+            {
+              onSuccess: () => {
+                setInformer({
+                  title: "Success!",
+                  description: "Your file has was uploaded successfully.",
+                  type: "success",
+                  isActive: true,
+                });
+                resetAll();
+                setTimeout(() => {
+                  navigate(`tickets/${response.ticket_id}`);
+                }, 500);
+              },
+              onError: () => {
+                setInformer({
+                  title: "Error!",
+                  description: "There was an issue creating your account.",
+                  type: "error",
+                  isActive: true,
+                });
+              },
+            }
+          );
+        }
+      },
+      onError: () => {
+        setInformer({
+          title: "Error!",
+          description: "There was an issue creating your account.",
+          type: "error",
+          isActive: true,
+        });
+      },
+    });
   };
 
   const renderInputs = (
@@ -133,6 +185,7 @@ const CreateTicketForm = ({
       case "textarea":
         return (
           <TextArea
+            className="w-full min-h-[200px]"
             key={input.input_id}
             label={input.label}
             placeholder={`Enter ${input.label}`}
@@ -169,16 +222,36 @@ const CreateTicketForm = ({
   };
 
   return (
-    <form className="space-y-4" onSubmit={handleSubmit(onSubmitForm)}>
-      {inputs?.map((input) => renderInputs(input, register, control, errors))}
-      <Button
-        type="submit"
-        variant="outline"
-        className="font-bold capitalize w-full"
-      >
-        {isLoading ? "Creating..." : "Create Ticket"}
-      </Button>
-    </form>
+    <>
+      <form className="space-y-4" onSubmit={handleSubmit(onSubmitForm)}>
+        {inputs?.map((input) => renderInputs(input, register, control, errors))}
+        <Button
+          type="submit"
+          variant="outline"
+          className="font-bold capitalize w-full"
+          isLoading={
+            createTicketMutation.isPending || createFileForTicket.isPending
+          }
+          disabled={
+            createTicketMutation.isPending || createFileForTicket.isPending
+          }
+        >
+          Create Ticket
+        </Button>
+      </form>
+      <Informer
+        title={informer.title}
+        description={informer.description}
+        type={informer.type}
+        isActive={informer.isActive}
+        onClose={() =>
+          setInformer((prev) => ({
+            ...prev,
+            isActive: false,
+          }))
+        }
+      />
+    </>
   );
 };
 
@@ -268,22 +341,25 @@ const MultipleSelect = ({
   setSelectedValues(selectedValues);
 
   return (
-    <div className="space-y-2">
-      <h2 className="text-xl font-medium text-primary">{input.label}</h2>
-      <div className="flex flex-col gap-4">
-        {input?.options?.map((option) => (
-          <button
-            type="button"
-            className={`${
-              selectedValues.some((val: any) => val.response === option.value)
-                ? "bg-red-300"
-                : ""
-            }`}
-            onClick={() => selectShkpi(option)}
+    <div className="space-y-2 bg-white rounded-md">
+      <h2 className="font-medium">{input.label}*</h2>
+      <div className="flex flex-col gap-2">
+        {input?.options?.map((option: any) => (
+          <div
+            className={` p-2 flex justify-start  shadow-md gap-4 rounded-md duration-200 ease-linear capitalize font-medium`}
             key={option.option_id}
           >
+            <button
+              onClick={() => selectShkpi(option)}
+              type="button"
+              className={`w-5 h-5 ${
+                selectedValues.some((val: any) => val.response === option.value)
+                  ? "bg-primary"
+                  : "bg-neutral-300"
+              }  rounded-md ease-linear duration-200`}
+            ></button>
             {option.value}
-          </button>
+          </div>
         ))}
       </div>
 

@@ -16,7 +16,6 @@ const DragFile = ({ uploadedFiles, setUploadedFiles }: DragFileProps) => {
   const [isDragging, setIsDragging] = useState(false);
   // const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  console.log(uploadedFiles, "uploadedFiles");
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -29,7 +28,7 @@ const DragFile = ({ uploadedFiles, setUploadedFiles }: DragFileProps) => {
   };
 
   const processFiles = (files: File[]) => {
-    setUploadedFiles((prev) => [...prev, ...files]); // Store actual files, not just metadata
+    setUploadedFiles((prev) => [...prev, ...files]);
   };
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
@@ -40,7 +39,6 @@ const DragFile = ({ uploadedFiles, setUploadedFiles }: DragFileProps) => {
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("hello");
     const files = Array.from(e.target.files || []);
 
     processFiles(files);

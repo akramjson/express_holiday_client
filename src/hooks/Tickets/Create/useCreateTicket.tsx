@@ -10,6 +10,9 @@ const useCreateTicket = () => {
     const response = await postRequest({
       url: authEndpoints.CREATE_TICKET_PATH,
       data: data,
+      headers: {
+        Accept: "Application/json",
+      },
     });
 
     return response.data;
