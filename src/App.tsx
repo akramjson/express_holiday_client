@@ -4,9 +4,14 @@ import AgentSharedLayout from "./Components/Agent/Shared/AgentSharedLayout";
 import SharedLayout from "./Components/Auth/Shared";
 import ClientSharedLayout from "./Components/Client/Shared/ClientSharedLayout";
 import { AdminAgentsPage } from "./Pages/Admin";
+import AdminTicketComments from "./Pages/Admin/AdminTicketComments";
+import AdminTicketDetails from "./Pages/Admin/AdminTicketDetails";
+import AdminTicketPage from "./Pages/Admin/AdminTicketPage";
 import AdminTicketsPage from "./Pages/Admin/AdminTickets";
 import AdminHome from "./Pages/Admin/Home";
 import { AgentHomePage, AgentTicketsPage } from "./Pages/Agent";
+import AgentTicketDetails from "./Pages/Agent/AgentTicketDetails";
+import AgentTicketPage from "./Pages/Agent/AgentTicketPage";
 import {
   ForgetPasswordPage,
   LoginPage,
@@ -19,6 +24,8 @@ import {
   ClientTicketPage,
   ClientTicketsPage,
   ConfirmEmailPage,
+  TicketComments,
+  TicketDetails,
 } from "./Pages/Client";
 import { NotFoundPage } from "./Pages/Others";
 import ProtectedRoute from "./utils/ProtectedRoute";
@@ -41,7 +48,10 @@ const App = () => {
           <Route path="/client" element={<ClientSharedLayout />}>
             <Route index element={<ClientHomePage />} />
             <Route path="tickets" element={<ClientTicketsPage />} />
-            <Route path="tickets/:ticketId" element={<ClientTicketPage />} />
+            <Route path="tickets/:ticketId" element={<ClientTicketPage />}>
+              <Route index element={<TicketDetails />} />
+              <Route path="comments" element={<TicketComments />} />
+            </Route>
           </Route>
         </Route>
 
@@ -49,6 +59,10 @@ const App = () => {
           <Route path="/dashboard" element={<AdminSharedLayout />}>
             <Route index element={<AdminHome />} />
             <Route path="tickets" element={<AdminTicketsPage />} />
+            <Route path="tickets/:ticketId" element={<AdminTicketPage />}>
+              <Route index element={<AdminTicketDetails />} />
+              <Route path="comments" element={<AdminTicketComments />} />
+            </Route>
             <Route path="agents" element={<AdminAgentsPage />} />
           </Route>
         </Route>
@@ -57,6 +71,10 @@ const App = () => {
           <Route path="/agent" element={<AgentSharedLayout />}>
             <Route index element={<AgentHomePage />} />
             <Route path="tickets" element={<AgentTicketsPage />} />
+            <Route path="tickets/:ticketId" element={<AgentTicketPage />}>
+              <Route index element={<AgentTicketDetails />} />
+              {/* <Route path="comments" element={<AgentTicketComments />} /> */}
+            </Route>
           </Route>
         </Route>
 

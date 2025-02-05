@@ -21,7 +21,7 @@ const useCreateTicket = () => {
 
   return useMutation({
     mutationFn: (data: any) => createTicket(data),
-    onSettled: (data, error) => {
+    onSettled: (error) => {
       if (error) {
       } else {
         queryClient.invalidateQueries({ queryKey: ["tickets", access_token] });

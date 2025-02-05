@@ -3,30 +3,30 @@ import { Button } from "../../../Components/UI";
 import useEditTicket from "../../../hooks/Tickets/Edit/useEditTicket";
 import useTicket from "../../../hooks/Tickets/View/useTicket";
 
-const ClientTicketPage = () => {
+const AdminTicketPage = () => {
   const { ticketId } = useParams();
   const links = [
     {
       name: "home",
-      link: "/client",
+      link: "/dashboard",
     },
     {
       name: "tickets",
-      link: "/client/tickets",
+      link: "/dashboard/tickets",
     },
     {
       name: "ticket details",
-      link: `/client/tickets/${ticketId}`,
+      link: `/dashboard/tickets/${ticketId}`,
     },
   ];
   const Ticketlinks = [
     {
       name: "details",
-      link: `/client/tickets/${ticketId}`,
+      link: `/dashboard/tickets/${ticketId}`,
     },
     {
       name: "Conversation",
-      link: `/client/tickets/${ticketId}/comments`,
+      link: `/dashboard/tickets/${ticketId}/comments`,
     },
   ];
 
@@ -103,4 +103,4 @@ const ClientTicketPage = () => {
   );
 };
 
-export default ClientTicketPage;
+export default AdminTicketPage;

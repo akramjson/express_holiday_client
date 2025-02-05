@@ -1,12 +1,12 @@
 import { useNavigate } from "react-router-dom";
-import { TabType } from "../../../../Pages/Client/ClientTickets";
-import { ticketSchematype } from "../../../../types/Tickets/schema";
+import { ticketSchematype } from "../../../types/Tickets/schema";
+import { TabType } from "../AdminTickets";
 
 type TicketCardProps = {
   ticket: ticketSchematype;
 };
 
-const TicketsCard = ({ ticket }: TicketCardProps) => {
+const AdminTicketsCard = ({ ticket }: TicketCardProps) => {
   const getStatusColor = (status: TabType) => {
     switch (status?.toLowerCase()) {
       case "open":
@@ -23,7 +23,7 @@ const TicketsCard = ({ ticket }: TicketCardProps) => {
   const navigate = useNavigate();
   return (
     <div
-      onClick={() => navigate(`/client/tickets/${ticket?.ticket_id}`)}
+      onClick={() => navigate(`/dashboard/tickets/${ticket?.ticket_id}`)}
       key={ticket?.ticket_id}
       // onClick={() => ticket?.id && navigate(`${ticket.id}`)}
       className="p-3 border-b-2 min-h-[140px] hover:shadow-md duration-300 ease-in cursor-pointer"
@@ -70,4 +70,4 @@ const TicketsCard = ({ ticket }: TicketCardProps) => {
   );
 };
 
-export default TicketsCard;
+export default AdminTicketsCard;

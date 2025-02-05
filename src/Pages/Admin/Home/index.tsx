@@ -27,7 +27,10 @@ const AdminHome = () => {
       bg: "#1640D61F",
     },
   ];
-  const { data: tickets, isPending } = useTickets();
+  const { data: tickets, isPending } = useTickets({
+    limit: 3,
+    offset: 0,
+  });
 
   return (
     <div className="w-[85%] mx-auto flex flex-col gap-4">

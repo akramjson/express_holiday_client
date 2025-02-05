@@ -16,7 +16,7 @@ const useRemoveAgent = (userId: string | undefined) => {
     onSettled: (error, _variables) => {
       if (error) {
       } else {
-        queryClient.invalidateQueries({ queryKey: ["projects"] });
+        queryClient.invalidateQueries({ queryKey: ["users"] });
       }
     },
   });

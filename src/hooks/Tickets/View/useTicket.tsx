@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import useAuthenticatedCalls from "../../../api/authenticatedapi";
 import { clientEndpoints } from "../../../libs/clientEndpoints";
+import { ticketSchematype } from "../../../types/Tickets/schema";
 
 const useTicket = (ticket_id: number | undefined) => {
   const { getRequest } = useAuthenticatedCalls();
@@ -8,7 +9,7 @@ const useTicket = (ticket_id: number | undefined) => {
     const res = await getRequest({
       url: `${clientEndpoints.GET_TICKETS_PATH}${ticket_id}`,
     });
-    return res;
+    return res.data as ticketSchematype;
   };
 
   return useQuery({

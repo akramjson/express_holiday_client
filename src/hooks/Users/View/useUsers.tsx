@@ -21,10 +21,11 @@ const useUsers = ({ role, offset = 0, limit = 10 }: UseUsersProps) => {
   return useQuery({
     queryKey: ["users", role, offset, limit],
     queryFn: getUsers,
-    staleTime: 60 * 1000,
-    gcTime: 1000 * 60 * 5,
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
+    staleTime: 60 * 1000, // Cache data for 1 minute
+    gcTime: 1000 * 60 * 5, // Keep cached data for 5 minutes
+    refetchOnMount: true, // Refetch when component mounts
+    refetchOnWindowFocus: true, // Refetch when window focus
+    retry: 3, // Retry 3 times on failure
   });
 };
 

@@ -90,7 +90,7 @@ const EditAgent = ({ agent, onClose, remove }: EditProjectProps) => {
         onClose={onClose}
         variant={"admin"}
         title="edit agent details"
-        className="w-[20%] h-[96%] right-5"
+        className="min-w-[20%] h-[96%] right-5"
       >
         <div className="flex flex-col gap-5 pt-10 px-3 justify-between h-full">
           <div className="flex gap-2">

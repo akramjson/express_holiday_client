@@ -8,7 +8,7 @@ export type UploadedFile = {
 };
 
 type DragFileProps = {
-  uploadedFiles: UploadedFile[];
+  uploadedFiles: File[];
   setUploadedFiles: any;
 };
 
